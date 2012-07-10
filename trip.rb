@@ -12,8 +12,8 @@ class Trip
   end
 
   def comparison
-    if @driving_time < @transit_time
-      "Take BART."
+    if @transit_time < @driving_time
+      "Take Transit."
     elsif @transit_time > @driving_time
       "Drive."
     else
