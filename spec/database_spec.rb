@@ -11,7 +11,7 @@ describe 'Database' do
     @test_db = SQLite3::Database.new './database_test.db'
     @user = double("user")
     @user.stub(:name).and_return('Jessie')
-    @user.stub(:environmental_prefs).and_return(30.0)
+    @user.stub(:environmental_pref).and_return(30.0)
   end
 
   after :each do
@@ -37,8 +37,32 @@ describe 'Database' do
 
     it "actually returns the right information" do
       @db.save_user(@user)
-      @db.get_user(@user.name).should eq ({'name' => 'Jessie','environmental_prefs' => 30})
+      @db.get_user(@user.name).should eq ({'name' => 'Jessie','environmental_pref' => 30})
     end
+
+  end
+
+
+  describe "#add_address" do
+
+    before :each do
+      @address = double("address")
+      @address.stub(:name).and_return('home')
+      @address.stub(:description).and_return('90 Divisadero St, SF, CA')
+    end
+
+    it "adds a line to the address table" do
+      @db.save_address(@address)
+      results = @test_db.execute 'SELECT * FROM addresses'
+      results.should_not eq []
+    end
+
+    it "has a user_id column when being added" do
+      @db.save_address(@address)
+      results = @test_db.execute 'SELECT user_id FROM addresses'
+      results[0].should_not be nil
+    end
+
 
   end
 
