@@ -33,7 +33,8 @@ module Query
     end
 
     def trip_duration
-      json_response["routes"][0]["legs"][0]["duration"]["value"]
+       json_response["routes"][0]["legs"][0]["duration"]["value"]
+
     end
 
     def json_response

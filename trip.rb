@@ -1,3 +1,5 @@
+require_relative './maps.rb'
+
 class Trip
 
   attr_reader :origin, :destination, :driving_time, :transit_time
@@ -5,8 +7,8 @@ class Trip
   def initialize(origin, destination)
     @origin = origin
     @destination = destination
-    @driving_time = Maps.new({:origin => origin, :destination => destination,:mode=> 'driving'}).duration
-    @transit_time = Maps.new({:origin => origin, :destination => destination,:mode=> 'transit'}).duration
+    @driving_time = time('driving')
+    @transit_time = time('transit')
   end
 
   def comparison
@@ -19,11 +21,9 @@ class Trip
     end
   end
 
-
-end
-
-class Maps
-  def initialize(hash)
+  def time(mode)
+    Query::Maps.new({:origin => @origin, :destination => @destination,:mode=> mode }).duration
   end
-end
 
+
+end
