@@ -35,6 +35,8 @@ describe Trip do
 
     before :each do
        Query::Maps.any_instance.stub(:trip_duration).and_return(5)
+       # Trip.any_instance.stub(:time).with('transit') { 5 } # .and_return(5)
+       # Trip.any_instance.stub(:time).with('driving') { 9 } # .and_return(9)
        @trip = Trip.new('home', 'work')
      end
 
