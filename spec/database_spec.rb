@@ -47,20 +47,32 @@ describe 'Database' do
 
     before :each do
       @address = double("address")
-      @address.stub(:name).and_return('home')
+      @address.stub(:location_name).and_return('home')
       @address.stub(:description).and_return('90 Divisadero St, SF, CA')
+      @db.save_user(@user)
+      @db.save_address(@address, "Jessie")
     end
 
     it "adds a line to the address table" do
-      @db.save_address(@address)
       results = @test_db.execute 'SELECT * FROM addresses'
       results.should_not eq []
     end
 
     it "has a user_id column when being added" do
-      @db.save_address(@address)
       results = @test_db.execute 'SELECT user_id FROM addresses'
       results[0].should_not be nil
+    end
+
+    it "has the correct user_id column when being added" do
+      id = @test_db.execute "SELECT id FROM users WHERE name = 'Jessie'"
+      results = @test_db.execute 'SELECT user_id FROM addresses'
+      results.should eq id
+    end
+
+    it "should not save duplicate addresses" do
+      @db.save_address(@address, "Jessie")
+      dupe_test = @test_db.execute 'SELECT location_name FROM addresses'
+      dupe_test[1].should_not be
     end
 
 
