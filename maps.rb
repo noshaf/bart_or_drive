@@ -14,6 +14,18 @@ module Query
 
     private
 
+    def trip_duration
+       json_response["routes"][0]["legs"][0]["duration"]["value"]
+    end
+
+    def json_response
+      JSON.parse(get_response.body)
+    end
+
+    def get_response
+      Net::HTTP.get_response(build_uri)
+    end
+
     def build_uri
       URI("#{base_url}?#{url_params}")
     end
@@ -26,19 +38,6 @@ module Query
       @options.collect do |key, value|
         "#{key}=#{value.gsub(' ', '+')}"
       end.join("&")
-    end
-
-    def get_response
-      Net::HTTP.get_response(build_uri)
-    end
-
-    def trip_duration
-       json_response["routes"][0]["legs"][0]["duration"]["value"]
-
-    end
-
-    def json_response
-      JSON.parse(get_response.body)
     end
   end
 end
