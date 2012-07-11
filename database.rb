@@ -9,7 +9,7 @@ module Query
       create table if NOT EXISTS users(
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name VARCHAR(64),
-      environmental_prefs DOUBLE,
+      environmental_pref DOUBLE,
       created_at DATETIME,
       updated_at DATETIME
       );
@@ -18,12 +18,13 @@ module Query
       @db.execute <<-SQL
       create table if NOT EXISTS addresses (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name varchar(30),
+      location_name varchar(30),
       description VARCHAR,
-      created_at DATEIME,
+      created_at DATETIME,
       updated_at DATETIME,
       user_id INTEGER,
-      FOREIGN KEY (user_id) REFERENCES users(id)
+      FOREIGN KEY (user_id) REFERENCES users(id),
+      UNIQUE (user_id, location_name)
       );
       SQL
 
@@ -33,13 +34,30 @@ module Query
       @db.results_as_hash = true
       query = "SELECT * FROM users WHERE name = ?"
       results = @db.execute(query, user_name)
-      results[0].select { |k,v| k == 'name' || k == 'environmental_prefs'}
+      results[0].select { |k,v| k == 'name' || k == 'environmental_pref'}
     end
 
+    # def save! (user)
+    #   save_user(user)
+    #     user.addresses.each do |address|
+    #       save_address(address)
+    #     end
+    # end
+
     def save_user(user)
-      query = "INSERT INTO users (name, environmental_prefs) VALUES (?, ?)"
-      @db.execute(query, user.name, user.environmental_prefs)
+      query = "INSERT INTO users (name, environmental_pref) VALUES (?, ?)"
+      @db.execute(query, user.name, user.environmental_pref)
     end
+
+
+    def save_address(address, user_name)
+      find_id = "SELECT id FROM users WHERE name = ? "
+      id = @db.execute(find_id, user_name)
+      insert_address = "INSERT INTO addresses (location_name, description, user_id) VALUES (?, ?, ?)"
+
+      @db.execute(insert_address, address.location_name, address.description, id) unless
+    end
+
   end
 
 end
