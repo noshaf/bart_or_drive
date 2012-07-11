@@ -1,3 +1,4 @@
+require 'sqlite3'
 module Query
 
   class Database
@@ -34,7 +35,7 @@ module Query
       results[0]
     end
 
-    def save! (user)
+    def save!(user)
       save_user(user)
         user.addresses.each do |address|
           save_address(address, user.name)

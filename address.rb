@@ -1,7 +1,7 @@
 class Address
-  attr_reader :name, :description
-  def initialize(name,description)
-    @name = name
+  attr_reader :location_name, :description
+  def initialize(location_name,description)
+    @location_name = location_name
     @description = description
   end
 

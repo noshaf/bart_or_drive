@@ -21,7 +21,7 @@ describe User do
     end
 
     it 'should have an address object array' do
-      @user.addresses.collect(&:name).sort.should == ["Favorite Coffee Shop", "Work"]
+      @user.addresses.collect(&:location_name).sort.should == ["Favorite Coffee Shop", "Work"]
     end
 
     it 'assigns the description for the address' do
@@ -42,7 +42,7 @@ describe User do
 
     it "should add another address to the user's address" do
       @user.add_address([{"location_name" => "Favorite Lunch Spot", "description" => "Muracci's Japanese Curry & Grill, SF"}])
-      dive_bar = @user.addresses.find {|add| add.name == "Favorite Lunch Spot"}
+      dive_bar = @user.addresses.find {|add| add.location_name == "Favorite Lunch Spot"}
       dive_bar.description.should == "Muracci's Japanese Curry & Grill, SF"
     end
   end
@@ -52,11 +52,12 @@ describe User do
     it "saves the user by sending it to the database object" do
       @db = Query::Database.new("test.db")
       Query::Database.stub!(:new).and_return(@db)
-      @user.add_address({"location_name" => "sin city", "description" => "Las Vegas"})
+      @user.add_address([{"location_name" => "sin city", "description" => "Las Vegas"}])
       @user.save!
-      @db.results_as_hash = true
-      results = @db.execute( "SELECT users.* addresses.* FROM addresses JOIN users ON users.id=addresses.user_id WHERE users.name='Shereef'")
-      locations = results.collect {|row| row[description]}
+      test_db = SQLite3::Database.new("test.db")
+      test_db.results_as_hash = true
+      results = test_db.execute( "SELECT users.*, addresses.* FROM addresses JOIN users ON users.id=addresses.user_id WHERE users.name='Shereef'")
+      locations = results.collect {|row| row['description']}
       locations.include?("Las Vegas").should be true
     end
 

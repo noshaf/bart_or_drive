@@ -1,5 +1,4 @@
-require 'simplecov'
-# Simplecov.Start
+
 require 'rspec'
 require_relative '../address.rb'
 
@@ -14,7 +13,7 @@ describe Address do
     end
 
     it "has a name" do
-      @address.name.should == "work"
+      @address.location_name.should == "work"
     end
 
     it "has a description" do

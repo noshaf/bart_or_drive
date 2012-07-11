@@ -2,7 +2,6 @@ require 'simplecov'
 SimpleCov.start
 require '../database.rb'
 require 'rspec'
-require 'sqlite3'
 
 describe 'Database' do
 

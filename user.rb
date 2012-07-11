@@ -16,8 +16,8 @@ class User
   end
 
   def save!
-    Query::Database.new('database.db')
-    Query::Database.save!(self)
+    @db = Query::Database.new('database.db')
+    @db.save!(self)
   end
 
 end
