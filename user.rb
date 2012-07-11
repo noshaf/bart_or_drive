@@ -10,13 +10,14 @@ class User
   end
 
   def add_address (address_options)
-    address_options.each do |name,description|
-      @addresses << Address.new(name,description)
+    address_options.each do |address_hash|
+      @addresses << Address.new(address_hash['location_name'], address_hash['description'])
     end
   end
 
   def save!
-    Query::Database.save(self)
+    Query::Database.new('database.db')
+    Query::Database.save!(self)
   end
 
 end

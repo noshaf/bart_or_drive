@@ -1,12 +1,13 @@
 require 'simplecov'
 require 'rspec'
 require_relative '../user.rb'
-#require_relative '../database.rb'
+require_relative '../database.rb'
 
 describe User do
   before(:each) do
     @user = User.new({'name' => "Shereef",
-                      'addresses' => {'home' => "717 California St, SF", 'work' => "160 Spear St. SF"},
+                      'addresses' => [{"location_name" => "Favorite Coffee Shop", "description" => "201 Harrison St SF CA"},
+                                      {"location_name" => "Work", "description" => "717 California st. SF CA"}],
                       'environmental_pref' => 30.0})
   end
   describe '#initialize' do
@@ -20,11 +21,11 @@ describe User do
     end
 
     it 'should have an address object array' do
-      @user.addresses.collect(&:name).sort.should == ['home', 'work']
+      @user.addresses.collect(&:name).sort.should == ["Favorite Coffee Shop", "Work"]
     end
 
     it 'assigns the description for the address' do
-      @user.addresses.last.description.should == "160 Spear St. SF"
+      @user.addresses.last.description.should == "717 California st. SF CA"
     end
 
     it 'should have a users environmental pref' do
@@ -35,23 +36,24 @@ describe User do
   describe '#add_address' do
     it 'increases the number of addresses' do
       expect {
-        @user.add_address({'dive_bar' => "Bus Stop Bar"})
+        @user.add_address([{"location_name" => "Favorite Lunch Spot", "description" => "Muracci's Japanese Curry & Grill, SF"}])
       }.to change(@user.addresses, :count).by(1)
     end
 
     it "should add another address to the user's address" do
-      @user.add_address({'dive_bar' => "Bus Stop Bar"})
-      dive_bar = @user.addresses.find {|add| add.name == 'dive_bar'}
-      dive_bar.description.should == "Bus Stop Bar"
+      @user.add_address([{"location_name" => "Favorite Lunch Spot", "description" => "Muracci's Japanese Curry & Grill, SF"}])
+      dive_bar = @user.addresses.find {|add| add.name == "Favorite Lunch Spot"}
+      dive_bar.description.should == "Muracci's Japanese Curry & Grill, SF"
     end
   end
 
   describe '#save!' do
 
-    it "saves the user by sending it to the database object"
-      @user.add_address({'sin_city' => "Las Vegas"})
-      @user.save!
+    it "saves the user by sending it to the database object" do
       @db = Query::Database.new("test.db")
+      Query::Database.stub!(:new).and_return(@db)
+      @user.add_address({"location_name" => "sin city", "description" => "Las Vegas"})
+      @user.save!
       @db.results_as_hash = true
       results = @db.execute( "SELECT users.* addresses.* FROM addresses JOIN users ON users.id=addresses.user_id WHERE users.name='Shereef'")
       locations = results.collect {|row| row[description]}
