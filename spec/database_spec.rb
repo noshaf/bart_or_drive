@@ -1,6 +1,6 @@
 require 'simplecov'
 SimpleCov.start
-require '../database'
+require '../database.rb'
 require 'rspec'
 require 'sqlite3'
 
@@ -38,6 +38,22 @@ describe 'Database' do
     it "actually returns the right information" do
       @db.save_user(@user)
       @db.get_user(@user.name).should eq ({'name' => 'Jessie','environmental_pref' => 30})
+    end
+
+  end
+
+  describe "#get_user_with_addresses" do
+
+    before :each do
+      @address = double("address")
+      @user.stub(:addresses).and_return([@address, @address])
+      @address.stub(:location_name).and_return("Work", "Favorite Coffee Shop")
+      @address.stub(:description).and_return("717 California st. SF CA", "201 Harrison St SF CA")
+    end
+
+    it "gets a user id, environmental prefs, and addresses" do
+      @db.save!(@user)
+      @db.get_user_with_addresses("Jessie").should eq({'name' => 'Jessie','environmental_pref' => 30, 'addresses' => [{"location_name" => "Work", "description" => "717 California st. SF CA"}, {"location_name" => "Favorite Coffee Shop", "description" => "201 Harrison St SF CA"}]})
     end
 
   end
@@ -87,5 +103,26 @@ describe 'Database' do
     end
 
   end
+
+  describe "#save!" do
+
+    before :each do
+      @address = double("address")
+      @user.stub(:addresses).and_return([@address, @address])
+      @address.stub(:location_name).and_return("Work", "Favorite Coffee Shop")
+      @address.stub(:description).and_return("717 California st. SF CA", "201 Harrison St SF CA")
+    end
+
+    it "adds multiple addresses for one user" do
+      @db.save!(@user)
+      find_id = "SELECT id FROM users WHERE name = ? "
+      id = @test_db.execute(find_id, @user.name)
+      get_addresses = "SELECT user_id FROM addresses WHERE user_id = ?"
+      addresses = @test_db.execute(get_addresses, id)
+      addresses.length.should eq 2
+    end
+
+  end
+
 
 end

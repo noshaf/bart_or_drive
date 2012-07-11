@@ -37,12 +37,12 @@ module Query
       results[0].select { |k,v| k == 'name' || k == 'environmental_pref'}
     end
 
-    # def save! (user)
-    #   save_user(user)
-    #     user.addresses.each do |address|
-    #       save_address(address)
-    #     end
-    # end
+    def save! (user)
+      save_user(user)
+        user.addresses.each do |address|
+          save_address(address, user.name)
+        end
+    end
 
     def save_user(user)
       query = "INSERT INTO users (name, environmental_pref) VALUES (?, ?)"
