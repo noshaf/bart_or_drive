@@ -5,7 +5,7 @@ require_relative '../address.rb'
 
 describe Address do
   before(:each) do
-    @address = Address.new({:work => "717 California St, SF CA"})
+    @address = Address.new('work', '717 California St, SF CA')
   end
   describe "#initialize" do
 
@@ -14,7 +14,7 @@ describe Address do
     end
 
     it "has a name" do
-      @address.name.should == :work
+      @address.name.should == "work"
     end
 
     it "has a description" do
