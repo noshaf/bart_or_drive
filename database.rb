@@ -49,13 +49,14 @@ module Query
       @db.execute(query, user.name, user.environmental_pref)
     end
 
-
     def save_address(address, user_name)
       find_id = "SELECT id FROM users WHERE name = ? "
       id = @db.execute(find_id, user_name)
       insert_address = "INSERT INTO addresses (location_name, description, user_id) VALUES (?, ?, ?)"
-
-      @db.execute(insert_address, address.location_name, address.description, id) unless
+      begin
+        @db.execute(insert_address, address.location_name, address.description, id)
+      rescue
+      end
     end
 
   end

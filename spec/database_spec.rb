@@ -76,6 +76,16 @@ describe 'Database' do
     end
 
 
+    it "should really really not save duplicate addresses" do
+      @db.save_address(@address, "Jessie")
+      @db.save_address(@address, "Jessie")
+      @db.save_address(@address, "Jessie")
+      @db.save_address(@address, "Jessie")
+      @db.save_address(@address, "Jessie")
+      dupe_test = @test_db.execute 'SELECT location_name FROM addresses'
+      dupe_test.length.should eq 1
+    end
+
   end
 
 end
