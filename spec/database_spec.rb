@@ -29,21 +29,6 @@ describe 'Database' do
 
   describe "#get_user" do
 
-    it "takes one argument" do
-      expect {
-      @db.get_user("Jess")
-      }.should_not raise_error(ArgumentError)
-    end
-
-    it "actually returns the right information" do
-      @db.save_user(@user)
-      @db.get_user(@user.name).should eq ({'name' => 'Jessie','environmental_pref' => 30})
-    end
-
-  end
-
-  describe "#get_user_with_addresses" do
-
     before :each do
       @address = double("address")
       @user.stub(:addresses).and_return([@address, @address])
@@ -51,15 +36,21 @@ describe 'Database' do
       @address.stub(:description).and_return("717 California st. SF CA", "201 Harrison St SF CA")
     end
 
-    it "gets a user id, environmental prefs, and addresses" do
-      @db.save!(@user)
-      @db.get_user_with_addresses("Jessie").should eq({'name' => 'Jessie','environmental_pref' => 30, 'addresses' => [{"location_name" => "Work", "description" => "717 California st. SF CA"}, {"location_name" => "Favorite Coffee Shop", "description" => "201 Harrison St SF CA"}]})
+    it "takes one argument" do
+      expect {
+      @db.get_user("Jess")
+      }.should_not raise_error(ArgumentError)
     end
 
+    it "gets a user id, environmental prefs, and addresses" do
+      @db.save!(@user)
+      @db.get_user("Jessie").should eq({'name' => 'Jessie','environmental_pref' => 30.0, 'addresses' => [{"location_name" => "Favorite Coffee Shop", "description" => "201 Harrison St SF CA"},{"location_name" => "Work", "description" => "717 California st. SF CA"}]})
+    end
   end
 
 
-  describe "#add_address" do
+
+  describe "#save_address" do
 
     before :each do
       @address = double("address")
