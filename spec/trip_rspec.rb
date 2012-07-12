@@ -4,10 +4,10 @@ require '../trip.rb'
 describe Trip do
 
   before :each do
-     Query::Maps.any_instance.stub(:trip_duration).and_return(5)
+     Query::Maps.any_instance.stub(:trip_duration).and_return(5,15)
      @person = {}
      @person.stub(:environmental_pref).and_return(30)
-     @trip = Trip.new('home', 'work', @person)
+     @trip = Trip.new('home', 'work')
   end
 
   describe '#initialize' do
@@ -33,7 +33,9 @@ describe Trip do
 
   describe "#transit_time" do
     it 'initializes a transit time variable' do
+      Query::Maps.any_instance.stub(:trip_duration).and_return(5,15)
       @trip.transit_time.should eq 5
+      @trip.transit_time.should eq 15
     end
   end
 

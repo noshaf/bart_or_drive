@@ -1,40 +1,25 @@
-
-<div class="row">
+<div class="container">
   <div class="span12">
     <form action="/form" method="post">
-      <center><input type="text" name="origin" placeholder="Starting location">
-      <input type="text" name="destination" placeholder="Ending location"><br>
-      <input type="submit" class='btn btn-primary'><br></center>
+      <input type="text" name="origin" placeholder="Starting location">
+      <input type="text" name="destination" placeholder="Ending location">
+      <input type="submit" class='btn btn-primary'>
     </form>
   </div>
-</div>
 
-<div class="row">
   <div class="span12">
-    <center><input type="text" id="user" name="user">
-      <br>
-    <a class="/edit_user">Add or Edit Users / Addresses</a></center>
+    <input type="text" id="user" name="user" placeholder="username">
+    <a class="/edit_user">Add or Edit Users / Addresses</a>
   </div>
-</div>
-<div class="row">
   <div class="span12">
     <div id="user_textbox_status">
     </div>
   </div>
-</div>
-<div class="row">
   <div class="span12">
-    <center>
     <div id="user_addresses_origin">
-      <select multiple="multiple" id="origin_addresses">
-      </select>
-      <select multiple="multiple" id="destination_addresses">
-      </select>
     </div>
     <div id="user_addresses_destination">
     </div>
-    </center>
   </div>
 </div>
-
 
