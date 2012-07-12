@@ -10,7 +10,7 @@ database = [
 ]
 
 get '/' do
-  erb :index
+  erb :drive
 end
 
 post '/form' do
