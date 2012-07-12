@@ -6,7 +6,7 @@ require '../maps.rb'
 
 describe "Maps" do
 
-  before(:each) do
+  before(:all) do
     @driving = Query::Maps.new({:origin => "717 California Street, SF", :destination => "24 Willie Mays Plaza, SF", :mode => "driving"})
     @transit = Query::Maps.new({:origin => "Embarcadero BART", :destination => "717 California Street, SF", :mode => "transit"})
   end

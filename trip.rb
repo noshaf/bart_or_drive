@@ -6,13 +6,15 @@ class Trip
     @origin = origin
     @destination = destination
     @user = user
+    @transit_time = transit_time
+    @driving_time = driving_time
   end
 
   def comparison
-    if transit_time < driving_time
-      "Take Transit. It's #{(driving_time-transit_time)/60} minutes faster."
-    elsif transit_time > driving_time
-      "Drive. It's #{(transit_time-driving_time)/60} minutes faster."
+    if @transit_time < @driving_time
+      "Take Transit."
+    elsif @transit_time > @driving_time
+      "Drive."
     else
       "Driving time and transit time are equal."
     end
@@ -27,6 +29,6 @@ class Trip
   end
 
   def driving_time
-    time('driving') + @user.environmental_pref
+    time('driving') + (@user.environmental_pref*60)
   end
 end
