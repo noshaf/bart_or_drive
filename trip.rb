@@ -2,10 +2,10 @@ require_relative './maps.rb'
 
 class Trip
   attr_reader :origin, :destination
-  def initialize(origin, destination, user)
+  def initialize(origin, destination)#, user)
     @origin = origin
     @destination = destination
-    @user = user
+    # @user = user
     @transit_time = transit_time
     @driving_time = driving_time
   end
@@ -29,6 +29,6 @@ class Trip
   end
 
   def driving_time
-    time('driving') + (@user.environmental_pref*60)
+    time('driving')# + (@user.environmental_pref*60)
   end
 end
