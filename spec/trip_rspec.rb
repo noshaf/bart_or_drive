@@ -27,7 +27,7 @@ describe Trip do
 
   describe "#driving_time" do
     it 'calculates the driving time based on environmental prefs' do
-      @trip.driving_time.should eq 35
+      @trip.driving_time.should eq 1805
     end
   end
 

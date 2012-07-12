@@ -59,6 +59,7 @@ describe User do
       results = test_db.execute( "SELECT users.*, addresses.* FROM addresses JOIN users ON users.id=addresses.user_id WHERE users.name='Shereef'")
       locations = results.collect {|row| row['description']}
       locations.include?("Las Vegas").should be true
+      File.delete('test.db')
     end
 
 
