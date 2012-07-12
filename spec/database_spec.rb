@@ -11,19 +11,11 @@ describe 'Database' do
     @user = double("user")
     @user.stub(:name).and_return('Jessie')
     @user.stub(:environmental_pref).and_return(30.0)
+    @user.stub(:addresses).and_return([])
   end
 
   after :each do
     File.delete('./database_test.db')
-  end
-
-  describe "#save_user" do
-
-    it "creates a new line in the users table" do
-      @db.save_user(@user)
-      results = @test_db.execute'SELECT * FROM users'
-      results.should_not eq []
-    end
   end
 
   describe "#get_user" do
@@ -55,18 +47,15 @@ describe 'Database' do
       @address = double("address")
       @address.stub(:location_name).and_return('home')
       @address.stub(:description).and_return('90 Divisadero St, SF, CA')
-      @db.save_user(@user)
+      @db.save!(@user)
       @db.save_address(@address, "Jessie")
     end
+
+
 
     it "adds a line to the address table" do
       results = @test_db.execute 'SELECT * FROM addresses'
       results.should_not eq []
-    end
-
-    it "has a user_id column when being added" do
-      results = @test_db.execute 'SELECT user_id FROM addresses'
-      results[0].should_not be nil
     end
 
     it "has the correct user_id column when being added" do
@@ -101,6 +90,19 @@ describe 'Database' do
       @user.stub(:addresses).and_return([@address, @address])
       @address.stub(:location_name).and_return("Work", "Favorite Coffee Shop")
       @address.stub(:description).and_return("717 California st. SF CA", "201 Harrison St SF CA")
+    end
+
+    it "creates a new line in the users table" do
+      @db.save!(@user)
+      results = @test_db.execute'SELECT * FROM users'
+      results.should_not eq []
+    end
+
+    it "writes new user preferences to the db" do
+      @db.save!(@user)
+      @user.stub(:environmental_pref).and_return(40.0)
+      @db.save!(@user)
+      @test_db.execute("SELECT environmental_pref FROM users").first.first.should eq 40.0
     end
 
     it "adds multiple addresses for one user" do
