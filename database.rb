@@ -9,7 +9,7 @@ module Query
       @db.execute <<-SQL
       create table if NOT EXISTS users(
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name VARCHAR(64),
+      name VARCHAR(64) UNIQUE,
       environmental_pref DOUBLE
       );
       SQL
@@ -27,7 +27,6 @@ module Query
     end
 
     def get_user(user_name)
-
       query = "SELECT * FROM users WHERE name = ?"
       results = @db.execute(query, user_name)
       results[0].select! { |k,v| k == 'name' || k == 'environmental_pref'}
@@ -36,15 +35,11 @@ module Query
     end
 
     def save!(user)
-      save_user(user)
-        user.addresses.each do |address|
-          save_address(address, user.name)
-        end
-    end
-
-    def save_user(user)
-      query = "INSERT INTO users (name, environmental_pref) VALUES (?, ?)"
-      @db.execute(query, user.name, user.environmental_pref)
+      add_new_user(user)
+      save_preferences(user)
+      user.addresses.each do |address|
+        save_address(address, user.name)
+      end
     end
 
     def save_address(address, user_name)
@@ -56,7 +51,25 @@ module Query
       end
     end
 
+    def get_all_user_names
+      result = @db.execute "SELECT name FROM users"
+      result.map { |hsh| hsh['name'] }
+    end
+
     private
+
+    def add_new_user(user)
+      begin
+        query = "INSERT INTO users (name, environmental_pref) VALUES (?, ?)"
+        @db.execute(query, user.name, user.environmental_pref)
+      rescue
+      end
+    end
+
+    def save_preferences(user)
+      query = "UPDATE users SET environmental_pref = ? WHERE name = ? "
+      @db.execute(query, user.environmental_pref, user.name)
+    end
 
     def get_user_id_from_name(user_name)
       @db.results_as_hash = false
