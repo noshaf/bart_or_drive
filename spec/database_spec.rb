@@ -116,5 +116,12 @@ describe 'Database' do
 
   end
 
-
+  describe "#get_all_user_names" do
+    it 'is kind of a self explanatory method' do
+      @db.save!(@user)
+      @user.stub(:name).and_return("Michael")
+      @db.save!(@user)
+      @db.get_all_user_names.should eq ["Jessie", "Michael"]
+    end
+  end
 end
