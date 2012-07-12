@@ -12,7 +12,7 @@ class UserInterface
   def run
     welcome
     first_time
-    while @menu_choice != "3"
+    while @menu_choice != "4"
       main_menu
     end
   end
@@ -76,7 +76,8 @@ class UserInterface
     puts "\nMain Menu\n\n"
     puts "1. Ask Bart vs Drive whether to Bart... or... Drive..."
     puts "2. Save an Address"
-    puts "3. Exit"
+    puts "3. List Saved Addresses"
+    puts "4. Exit"
     printf "What do you want to do?: "
     @menu_choice = gets.chomp
       case @menu_choice
@@ -85,6 +86,8 @@ class UserInterface
         when "2"
           save_an_address
         when "3"
+          list_addresses
+        when "4"
           puts "Goodbye!"
           @user.save!
       end
@@ -115,6 +118,14 @@ class UserInterface
       address.description
     else
       input
+    end
+  end
+  
+  def list_addresses
+      puts "\n#{"name".ljust(20," ")}address"
+      puts "-"*40
+    @user.addresses.each do |address|
+      puts "#{address.location_name.ljust(20," ")}#{address.description}"
     end
   end
   
