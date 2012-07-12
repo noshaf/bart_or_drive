@@ -4,10 +4,19 @@ require '../trip.rb'
 describe Trip do
 
   before :each do
-     Query::Maps.any_instance.stub(:trip_duration).and_return(5,15)
-     @person = {}
-     @person.stub(:environmental_pref).and_return(30)
-     @trip = Trip.new('home', 'work')
+    map1 = double
+    map2 = double
+    Query::Maps.should_receive!(:new).with(:origin => '1592 morgan ln Walnut Creek, CA',
+                                          :destination => '717 california st SF',
+                                          :mode => 'driving').and_return(map1)
+    Query::Maps.should_receive!(:new).with(:origin => '1592 morgan ln Walnut Creek, CA',
+                                          :destination => '717 california st SF',
+                                          :mode => 'transit').and_return(map2)
+    map1.stub(:duration).and_return(5)
+    map2.stub(:duration).and_return(15)
+    @person = {}
+    @person.stub(:environmental_pref).and_return(30)
+    @trip = Trip.new('1592 morgan ln Walnut Creek, CA', '717 california st SF', @person)
   end
 
   describe '#initialize' do
@@ -17,11 +26,11 @@ describe Trip do
     end
 
     it 'should be initialized with an origin location' do
-      @trip.origin.should == 'home'
+      @trip.origin.should == '1592 morgan ln Walnut Creek, CA'
     end
 
     it 'should be initialized with a destination location' do
-      @trip.destination.should eq('work')
+      @trip.destination.should eq('717 california st SF')
     end
   end
 
