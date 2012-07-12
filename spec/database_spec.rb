@@ -39,79 +39,74 @@ describe 'Database' do
     end
   end
 
-
-
-  describe "#save_address" do
-
-    before :each do
-      @address = double("address")
-      @address.stub(:location_name).and_return('home')
-      @address.stub(:description).and_return('90 Divisadero St, SF, CA')
-      @db.save!(@user)
-      @db.save_address(@address, "Jessie")
-    end
-
-
-
-    it "adds a line to the address table" do
-      results = @test_db.execute 'SELECT * FROM addresses'
-      results.should_not eq []
-    end
-
-    it "has the correct user_id column when being added" do
-      id = @test_db.execute "SELECT id FROM users WHERE name = 'Jessie'"
-      results = @test_db.execute 'SELECT user_id FROM addresses'
-      results.should eq id
-    end
-
-    it "should not save duplicate addresses" do
-      @db.save_address(@address, "Jessie")
-      dupe_test = @test_db.execute 'SELECT location_name FROM addresses'
-      dupe_test[1].should_not be
-    end
-
-
-    it "should really really not save duplicate addresses" do
-      @db.save_address(@address, "Jessie")
-      @db.save_address(@address, "Jessie")
-      @db.save_address(@address, "Jessie")
-      @db.save_address(@address, "Jessie")
-      @db.save_address(@address, "Jessie")
-      dupe_test = @test_db.execute 'SELECT location_name FROM addresses'
-      dupe_test.length.should eq 1
-    end
-
-  end
-
   describe "#save!" do
+    describe 'single addresses' do
+      before :each do
+        @address = double("address")
+        @user.stub(:addresses).and_return([@address, @address])
+        @address.stub(:location_name).and_return('home')
+        @address.stub(:description).and_return('90 Divisadero St, SF, CA')
+        @db.save!(@user)
+      end
 
-    before :each do
-      @address = double("address")
-      @user.stub(:addresses).and_return([@address, @address])
-      @address.stub(:location_name).and_return("Work", "Favorite Coffee Shop")
-      @address.stub(:description).and_return("717 California st. SF CA", "201 Harrison St SF CA")
+      it "adds a line to the address table" do
+        results = @test_db.execute 'SELECT * FROM addresses'
+        results.should_not eq []
+      end
+
+      it "has the correct user_id column when being added" do
+        id = @test_db.execute "SELECT id FROM users WHERE name = 'Jessie'"
+        results = @test_db.execute 'SELECT user_id FROM addresses'
+        results.should eq id
+      end
+
+      it "should not save duplicate addresses" do
+        @db.save!(@user)
+        dupe_test = @test_db.execute 'SELECT location_name FROM addresses'
+        dupe_test[1].should_not be
+      end
+
+
+      it "should really really not save duplicate addresses" do
+        @db.save!(@user)
+        @db.save!(@user)
+        @db.save!(@user)
+        @user.stub(:name).and_return("Michael")
+        @db.save!(@user)
+        dupe_test = @test_db.execute 'SELECT location_name FROM addresses'
+        dupe_test.length.should eq 2
+      end
     end
 
-    it "creates a new line in the users table" do
-      @db.save!(@user)
-      results = @test_db.execute'SELECT * FROM users'
-      results.should_not eq []
-    end
+    describe 'multiple addresses' do
+      before :each do
+        @address = double("address")
+        @user.stub(:addresses).and_return([@address, @address])
+        @address.stub(:location_name).and_return("Work", "Favorite Coffee Shop")
+        @address.stub(:description).and_return("717 California st. SF CA", "201 Harrison St SF CA")
+      end
 
-    it "writes new user preferences to the db" do
-      @db.save!(@user)
-      @user.stub(:environmental_pref).and_return(40.0)
-      @db.save!(@user)
-      @test_db.execute("SELECT environmental_pref FROM users").first.first.should eq 40.0
-    end
+      it "creates a new line in the users table" do
+        @db.save!(@user)
+        results = @test_db.execute'SELECT * FROM users'
+        results.should_not eq []
+      end
 
-    it "adds multiple addresses for one user" do
-      @db.save!(@user)
-      find_id = "SELECT id FROM users WHERE name = ? "
-      id = @test_db.execute(find_id, @user.name)
-      get_addresses = "SELECT user_id FROM addresses WHERE user_id = ?"
-      addresses = @test_db.execute(get_addresses, id)
-      addresses.length.should eq 2
+      it "writes new user preferences to the db" do
+        @db.save!(@user)
+        @user.stub(:environmental_pref).and_return(40.0)
+        @db.save!(@user)
+        @test_db.execute("SELECT environmental_pref FROM users").first.first.should eq 40.0
+      end
+
+      it "adds multiple addresses for one user" do
+        @db.save!(@user)
+        find_id = "SELECT id FROM users WHERE name = ? "
+        id = @test_db.execute(find_id, @user.name)
+        get_addresses = "SELECT user_id FROM addresses WHERE user_id = ?"
+        addresses = @test_db.execute(get_addresses, id)
+        addresses.length.should eq 2
+      end
     end
 
   end
