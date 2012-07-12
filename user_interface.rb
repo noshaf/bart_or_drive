@@ -6,6 +6,7 @@ class UserInterface
   def initialize
   @db = Query::Database.new('database.db')
   @menu_choice = ""
+  @saved_addresses = []
   end
 
   def run
@@ -43,7 +44,7 @@ class UserInterface
     environmental_pref = gets.chomp
     puts "Shame on you!" if environmental_pref == "0"
     user_hash = {'name' => user_name, 'environmental_pref' => environmental_pref.to_f, 'addresses' => []}
-    @user = User.new(user_hash)
+    create_user(user_hash)
     puts "\nWelcome #{user_name}!"
   end
 
@@ -55,8 +56,13 @@ class UserInterface
     current_user = gets.chomp
     validate(current_user,all_users)
     user_hash = @db.get_user(current_user)
-    @user = User.new(user_hash)
+    create_user(user_hash)
     puts "\nWelcome back #{current_user}!"
+  end
+
+	def create_user(user_hash)
+	  @user = User.new(user_hash)
+	  @saved_addresses = @user.addresses.collect(&:location_name)
   end
 
   def validate(user_name,all_users)
@@ -86,9 +92,9 @@ class UserInterface
 
   def bart_or_drive
     printf "Enter starting point: "
-    origin = gets.chomp
+    origin = check_saved_addresses(gets.chomp)
     printf "Enter destination point: "
-    destination = gets.chomp
+    destination = check_saved_addresses(gets.chomp)
     new_trip = Trip.new(origin,destination,@user)
     puts new_trip.comparison
   end
@@ -100,7 +106,18 @@ class UserInterface
     new_location_name = gets.chomp
     address_hash = {'location_name' => new_location_name, 'description' => new_address}
     @user.add_address([address_hash])
+    @saved_addresses = @user.addresses.collect(&:location_name)
   end
+  
+  def check_saved_addresses(input)
+    if @saved_addresses.include?(input)
+      address = @user.addresses.find { |hash| hash.location_name == input }
+      address.description
+    else
+      input
+    end
+  end
+  
 end
 
 UserInterface.new.run
