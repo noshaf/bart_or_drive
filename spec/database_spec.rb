@@ -10,7 +10,7 @@ describe 'Database' do
     @test_db = SQLite3::Database.new './database_test.db'
     @user = double("user")
     @user.stub(:name).and_return('Jessie')
-    @user.stub(:environmental_pref).and_return(30.0)
+    @user.stub(:transit_tolerance_in_minutes).and_return(30.0)
     @user.stub(:addresses).and_return([])
   end
 
@@ -35,7 +35,7 @@ describe 'Database' do
 
     it "gets a user id, environmental prefs, and addresses" do
       @db.save!(@user)
-      @db.get_user("Jessie").should eq({'name' => 'Jessie','environmental_pref' => 30.0, 'addresses' => [{"location_name" => "Favorite Coffee Shop", "description" => "201 Harrison St SF CA"},{"location_name" => "Work", "description" => "717 California st. SF CA"}]})
+      @db.get_user("Jessie").should eq({'name' => 'Jessie','transit_tolerance_in_minutes' => 30.0, 'addresses' => [{"location_name" => "Favorite Coffee Shop", "description" => "201 Harrison St SF CA"},{"location_name" => "Work", "description" => "717 California st. SF CA"}]})
     end
   end
 
@@ -94,9 +94,9 @@ describe 'Database' do
 
       it "writes new user preferences to the db" do
         @db.save!(@user)
-        @user.stub(:environmental_pref).and_return(40.0)
+        @user.stub(:transit_tolerance_in_minutes).and_return(40.0)
         @db.save!(@user)
-        @test_db.execute("SELECT environmental_pref FROM users").first.first.should eq 40.0
+        @test_db.execute("SELECT transit_tolerance_in_minutes FROM users").first.first.should eq 40.0
       end
 
       it "adds multiple addresses for one user" do

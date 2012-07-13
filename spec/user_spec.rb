@@ -8,7 +8,7 @@ describe User do
     @user = User.new({'name' => "Shereef",
                       'addresses' => [{"location_name" => "Favorite Coffee Shop", "description" => "201 Harrison St SF CA"},
                                       {"location_name" => "Work", "description" => "717 California st. SF CA"}],
-                      'environmental_pref' => 30.0})
+                      'transit_tolerance_in_minutes' => 30.0})
   end
   describe '#initialize' do
 
@@ -29,7 +29,7 @@ describe User do
     end
 
     it 'should have a users environmental pref' do
-      @user.environmental_pref.should == 30.0
+      @user.transit_tolerance_in_minutes.should == 30.0
     end
   end
 
