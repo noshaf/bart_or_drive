@@ -3,8 +3,8 @@ require './trip.rb'
 
 
 database = [
-  {'name' => "Ryan", :environmental_pref => 0, 'addresses' => [{:location_name => 'home', :description => 'Embarcadero Bart'}]},
-  {'name' => "Mike", :environmental_pref => 0, 'addresses' => [{:location_name => 'home', :description => '717 California St SF'},
+  {'name' => "Ryan", :transit_tolerance_in_minutes => 0, 'addresses' => [{:location_name => 'home', :description => 'Embarcadero Bart'}]},
+  {'name' => "Mike", :transit_tolerance_in_minutes => 0, 'addresses' => [{:location_name => 'home', :description => '717 California St SF'},
                                                              {:location_name => 'work', :description => 'Montgomery Bart'}]
   }
 ]

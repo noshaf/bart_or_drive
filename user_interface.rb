@@ -41,9 +41,9 @@ class UserInterface
     user_name = gets.chomp
     puts "How many minutes are you willing to sacrifice to take public transit?"
     printf "(Earth <3 Public Transit...): "
-    environmental_pref = gets.chomp
-    puts "Shame on you!" if environmental_pref == "0"
-    user_hash = {'name' => user_name, 'environmental_pref' => environmental_pref.to_f, 'addresses' => []}
+    transit_tolerance_in_minutes = gets.chomp
+    puts "Shame on you!" if transit_tolerance_in_minutes == "0"
+    user_hash = {'name' => user_name, 'transit_tolerance_in_minutes' => transit_tolerance_in_minutes.to_f, 'addresses' => []}
     create_user(user_hash)
     puts "\nWelcome #{user_name}!"
   end
@@ -60,9 +60,9 @@ class UserInterface
     puts "\nWelcome back #{current_user}!"
   end
 
-	def create_user(user_hash)
-	  @user = User.new(user_hash)
-	  @saved_addresses = @user.addresses.collect(&:location_name)
+  def create_user(user_hash)
+    @user = User.new(user_hash)
+    @saved_addresses = @user.addresses.collect(&:location_name)
   end
 
   def validate(user_name,all_users)
@@ -111,7 +111,7 @@ class UserInterface
     @user.add_address([address_hash])
     @saved_addresses = @user.addresses.collect(&:location_name)
   end
-  
+
   def check_saved_addresses(input)
     if @saved_addresses.include?(input)
       address = @user.addresses.find { |hash| hash.location_name == input }
@@ -120,7 +120,7 @@ class UserInterface
       input
     end
   end
-  
+
   def list_addresses
       puts "\n#{"name".ljust(20," ")}address"
       puts "-"*40
@@ -128,7 +128,7 @@ class UserInterface
       puts "#{address.location_name.ljust(20," ")}#{address.description}"
     end
   end
-  
+
 end
 
 UserInterface.new.run

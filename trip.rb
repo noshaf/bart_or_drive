@@ -1,19 +1,19 @@
 require_relative './maps.rb'
 
 class Trip
-  attr_reader :origin, :destination
+  attr_reader :origin, :destination, :driving_time, :transit_time
   def initialize(origin, destination)#, user)
     @origin = origin
     @destination = destination
-    # @user = user
-    @transit_time = transit_time
-    @driving_time = driving_time
+    #@user = user
+    @driving_time = time('driving')
+    @transit_time = time('transit')
   end
 
   def comparison
-    if @transit_time < @driving_time
+    if adjusted_transit_time < adjusted_driving_time
       "Take Transit."
-    elsif @transit_time > @driving_time
+    elsif adjusted_transit_time > adjusted_driving_time
       "Drive."
     else
       "Driving time and transit time are equal."
@@ -24,11 +24,11 @@ class Trip
     Query::Maps.new({:origin => @origin, :destination => @destination,:mode=> mode }).duration
   end
 
-  def transit_time
-    time('transit')
+  def adjusted_driving_time
+    @driving_time# + (@user.transit_tolerance_in_minutes*60)
   end
 
-  def driving_time
-    time('driving')# + (@user.environmental_pref*60)
+  def adjusted_transit_time
+    @transit_time
   end
 end

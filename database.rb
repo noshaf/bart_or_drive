@@ -10,7 +10,7 @@ module Query
       create table if NOT EXISTS users(
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name VARCHAR(64) UNIQUE,
-      environmental_pref DOUBLE
+      transit_tolerance_in_minutes DOUBLE
       );
       SQL
 
@@ -29,7 +29,7 @@ module Query
     def get_user(user_name)
       query = "SELECT * FROM users WHERE name = ?"
       results = @db.execute(query, user_name)
-      results[0].select! { |k,v| k == 'name' || k == 'environmental_pref'}
+      results[0].select! { |k,v| k == 'name' || k == 'transit_tolerance_in_minutes'}
       results[0]["addresses"] = get_addresses(user_name)
       results[0]
     end
@@ -60,15 +60,15 @@ module Query
 
     def add_new_user(user)
       begin
-        query = "INSERT INTO users (name, environmental_pref) VALUES (?, ?)"
-        @db.execute(query, user.name, user.environmental_pref)
+        query = "INSERT INTO users (name, transit_tolerance_in_minutes) VALUES (?, ?)"
+        @db.execute(query, user.name, user.transit_tolerance_in_minutes)
       rescue
       end
     end
 
     def save_preferences(user)
-      query = "UPDATE users SET environmental_pref = ? WHERE name = ? "
-      @db.execute(query, user.environmental_pref, user.name)
+      query = "UPDATE users SET transit_tolerance_in_minutes = ? WHERE name = ? "
+      @db.execute(query, user.transit_tolerance_in_minutes, user.name)
     end
 
     def get_user_id_from_name(user_name)

@@ -1,11 +1,11 @@
 require_relative './address.rb'
 
 class User
-  attr_reader :name, :addresses, :environmental_pref
+  attr_reader :name, :addresses, :transit_tolerance_in_minutes
   def initialize(options)
     @name = options.fetch('name') { raise "There needs to be a name" }
     @addresses = []
-    @environmental_pref = options['environmental_pref']
+    @transit_tolerance_in_minutes = options['transit_tolerance_in_minutes']
     add_address( options['addresses'] )
   end
 
