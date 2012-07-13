@@ -3,9 +3,10 @@ require './trip.rb'
 
 
 database = [
-  {'name' => "Ryan", :transit_tolerance_in_minutes => 0, 'addresses' => [{:location_name => 'home', :description => 'Embarcadero Bart'}]},
+  {'name' => "Ryan", :transit_tolerance_in_minutes => 0, 'addresses' => [{:location_name => 'home', :description => 'Embarcadero Bart SF'},
+                                                                         {:location_name => 'moms', :description => 'Muraccis Curry SF'}]},
   {'name' => "Mike", :transit_tolerance_in_minutes => 0, 'addresses' => [{:location_name => 'home', :description => '717 California St SF'},
-                                                             {:location_name => 'work', :description => 'Montgomery Bart'}]
+                                                                         {:location_name => 'work', :description => 'Montgomery Bart SF'}]
   }
 ]
 
@@ -23,7 +24,18 @@ end
 get '/edit_user/:user_name' do |user_name|
   output = ""
   database.each do |user|
-    output = user['addresses'].to_s if user['name'] == user_name
+    if user['name'] == user_name
+      addresses = ""
+      user['addresses'].each do |address|
+        addresses << "<option value='#{address[:description]}'>#{address[:location_name]}</option>"
+      end
+      output << "<select id='origin_addresses' multiple='multiple'>
+                  #{addresses}
+                </select>"
+      output << "<select id='destination_addresses' multiple='multiple'>
+                  #{addresses}
+                </select>"
+    end
   end
   output
 end
