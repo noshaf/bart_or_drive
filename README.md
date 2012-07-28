@@ -1,3 +1,4 @@
-DB_GreatRSpectations
-====================
-This program tells you whether to drive or take public transportation. It is endlessly magical and was made with love by Ryan, Jessie, Noah, and Jackie, otherwise known as RJNJ.
+Made by team DB_GreatRSpectations in week 5 of Dev Bootcamp.
+
+This program tells you whether to drive or take public transportation. Started as a console app and was moved to Sinatra. 
+
